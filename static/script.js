@@ -74,21 +74,84 @@ function addMessage(text, sender = "bot") {
 }
 
 // Function to format the bot's response
+// function formatBotResponse(responseText) {
+//     // Escape HTML characters
+//     responseText = responseText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+//     const lines = responseText.split('\n');
+//     let html = '';
+//     let inUl = false;
+//     let inOl = false;
+
+//     lines.forEach((line) => {
+//         const trimmed = line.trim();
+
+//         // Headings
+//         if (trimmed.startsWith('### ')) {
+//             if (inUl) { html += '</ul>'; inUl = false; }
+//             if (inOl) { html += '</ol>'; inOl = false; }
+//             html += `<h3>${trimmed.slice(4)}</h3>`;
+//         }
+
+//         // Numbered list
+//         else if (/^\d+\.\s+/.test(trimmed)) {
+//             if (!inOl) {
+//                 if (inUl) { html += '</ul>'; inUl = false; }
+//                 html += '<ol>'; inOl = true;
+//             }
+//             html += `<li>${trimmed.replace(/^\d+\.\s+/, '')}</li>`;
+//         }
+
+//         // Bullet list
+//         else if (trimmed.startsWith('- ')) {
+//             if (!inUl) {
+//                 if (inOl) { html += '</ol>'; inOl = false; }
+//                 html += '<ul>'; inUl = true;
+//             }
+//             html += `<li>${trimmed.slice(2)}</li>`;
+//         }
+
+//         // Paragraphs
+//         else if (trimmed !== '') {
+//             if (inUl) { html += '</ul>'; inUl = false; }
+//             if (inOl) { html += '</ol>'; inOl = false; }
+//             html += `<p>${trimmed}</p>`;
+//         }
+//     });
+
+//     // Close any unclosed lists
+//     if (inUl) html += '</ul>';
+//     if (inOl) html += '</ol>';
+
+//     return html;
+// }
 function formatBotResponse(responseText) {
-    // Step 1: Remove all occurrences of '**' from the response
+    // Step 1: Remove markdown-like bold markers
     responseText = responseText.replace(/\*\*/g, '');
 
-    // Step 2: Split the response into lines based on newline characters
+    // Step 2: Split by newlines
     const lines = responseText.split('\n');
 
-    // Step 3: Add bullet points to each line
-    const bulletedLines = lines.map((line) => {
-        if (line.trim() !== '') { // Ignore empty lines
-            return `- ${line}`;
-        }
-        return ''; // Return an empty string for empty lines
-    }).filter(line => line.trim() !== ''); // Filter out any remaining empty lines
+    // Step 3: Format nicely
+    let formatted = '';
 
-    // Step 4: Join all bulleted lines with line breaks for proper rendering
-    return bulletedLines.join('<br>');
+    lines.forEach((line) => {
+        const trimmed = line.trim();
+
+        if (trimmed.startsWith('### ')) {
+            // Big Heading
+            formatted += `<strong style="font-size: 1.2em;">${trimmed.slice(4)}</strong><br><br>`;
+        } else if (/^\d+\.\s+/.test(trimmed)) {
+            // Numbered points
+            formatted += `&nbsp;&nbsp;${trimmed}<br>`;
+        } else if (trimmed.startsWith('- ')) {
+            // Bulleted points
+            formatted += `&nbsp;&nbsp;• ${trimmed.slice(2)}<br>`;
+        } else if (trimmed !== '') {
+            // Normal paragraph text
+            formatted += `${trimmed}<br><br>`;
+        }
+    });
+
+    return formatted;
 }

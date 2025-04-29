@@ -1,8 +1,2 @@
-gunicorn
-requests
 Flask
-tensorflow
-Pillow
-flask-cors
-numpy
-python-dotenv
+gunicorn

@@ -42,7 +42,7 @@ body {
 }
 
 .bot-message {
-  color: green;
+  color: rgb(0, 0, 0);
   text-align: left;
   margin: 5px 0;
   background: #d4edda;

@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, jsonify
 import requests
 import os
 from dotenv import load_dotenv
+from openai import OpenAI
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -10,6 +12,10 @@ load_dotenv()
 API_KEY = os.getenv('API_KEY')
 if not API_KEY:
     raise ValueError("API_KEY not found. Please check your .env file.")
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=API_KEY,
+)
 
 # List of waste types and their associated sample questions
 waste_types = {
@@ -67,22 +73,27 @@ waste_types = {
 
 # Function to query OpenRouter API and get response from GPT-3.5 / GPT-4 model
 def query_openrouter(prompt):
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "model": "openai/gpt-3.5-turbo",  # or "openai/gpt-4"
-        "messages": [
-            {"role": "system", "content": "You are an expert in waste management."},
-            {"role": "user", "content": prompt}
-        ],
-        "temperature": 0.7,
-        "max_tokens": 500
-    }
-    response = requests.post("https://openrouter.ai/api/v1", headers=headers, json=payload)
-    response.raise_for_status()
-    return response.json()['choices'][0]['message']['content']
+    try:
+        completion = client.chat.completions.create(
+            extra_headers={
+                "Authorization": f"Bearer {API_KEY}",         # ✅ Add this line!
+                "HTTP-Referer": "https://your-site-url.com",   # optional
+                "X-Title": "Your App Name",                    # optional
+            },
+            model="nvidia/llama-3.1-nemotron-ultra-253b-v1:free",
+            messages=[
+                {"role": "system", "content": "You are an expert in waste management."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=500,
+        )
+        return completion.choices[0].message.content
+
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -110,5 +121,4 @@ def ask():
         return jsonify({'answer': f"Error: {str(e)}"})
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
