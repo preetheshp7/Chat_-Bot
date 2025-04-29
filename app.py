@@ -80,7 +80,7 @@ def query_openrouter(prompt):
         "temperature": 0.7,
         "max_tokens": 500
     }
-    response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
+    response = requests.post("https://openrouter.ai/api/v1", headers=headers, json=payload)
     response.raise_for_status()
     return response.json()['choices'][0]['message']['content']
 
