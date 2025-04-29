@@ -1,0 +1,95 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 20px;
+}
+
+.chat-container {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.chat-header {
+  background: #4CAF50;
+  color: white;
+  text-align: center;
+  padding: 15px;
+}
+
+.chat-box {
+  height: 400px;
+  overflow-y: scroll;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.user-message {
+  color: blue;
+  text-align: right;
+  margin: 5px 0;
+  background: #e0e0ff;
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 70%;
+  display: inline-block;
+}
+
+.bot-message {
+  color: green;
+  text-align: left;
+  margin: 5px 0;
+  background: #d4edda;
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 100%;
+  display: inline-block;
+}
+
+.chat-input-area {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+select, input, button {
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #45a049;
+}
+
+#suggested-questions {
+  margin-top: 10px;
+}
+
+.question-button {
+  margin: 5px;
+  padding: 5px 10px;
+  background: #45a049;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.question-button:hover {
+  background: #187bd1;
+}

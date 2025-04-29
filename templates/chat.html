@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Waste Info - {{ waste_type }}</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Waste Type: {{ waste_type }}</h1>
+
+    <input type="text" id="customQuestion" placeholder="Ask your own question about {{ waste_type }}" style="width: 60%;">
+    <button onclick="askCustomQuestion()">Ask</button>
+
+    <h3>Or click a question below:</h3>
+    <div id="questions">
+        {% for question in questions %}
+            <button onclick="askQuestion('{{ question }}')">{{ question }}</button><br><br>
+        {% endfor %}
+    </div>
+
+    <h2>Answer:</h2>
+    <div id="answer" style="margin-top: 20px; font-size: 1.1em; color: #333;"></div>
+
+    <br><br>
+    <a href="/">Start Over</a>
+
+    <script>
+        function askQuestion(question) {
+            fetch('/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    waste_type: "{{ waste_type }}",
+                    question: question
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('answer').innerHTML = data.answer;
+            });
+        }
+
+        function askCustomQuestion() {
+            var customQuestion = document.getElementById('customQuestion').value;
+            if (customQuestion.trim() !== '') {
+                askQuestion(customQuestion);
+            }
+        }
+    </script>
+</body>
+</html>
